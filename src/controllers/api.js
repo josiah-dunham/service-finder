@@ -3,7 +3,7 @@ import AbortController from "abort-controller"
 
 import { logger, spacer, done } from "../helpers/helpers"
 import constants from "../helpers/constants"
-import { json } from "express"
+import { Timer } from "./timer"
 
 export const api = () => {
   // Used to abort a fetch request
@@ -85,7 +85,12 @@ export const api = () => {
       () => controller.abort(),
       constants.FETCHTIMEOUT
     ) // Timer that aborts the fetch request if time exceeds defined timeout
+
+    const timer = Timer()
+
+    timer.start()
     const result = await fetchPorts(allPortFetches, fetchTimer)
+    timer.stop()
 
     const endMsg = result.driveStatus.isRunning
       ? `ProjectWise Drive is running on localhost:${result.driveStatus.port}.`
@@ -96,12 +101,19 @@ export const api = () => {
     logger(endMsg)
 
     spacer()
-    constants.SHOWSTATS ? done() : done()
-    return {
-      driveStatus: result.driveStatus,
-      driveInfo: result.driveInfo,
-      msg: endMsg
+    constants.SHOWSTATS ? timer.displayTotalTime() : done()
+
+    const data = {
+        driveStatus: result.driveStatus,
+        driveInfo: result.driveInfo,
+        msg: endMsg
     }
+
+    if(constants.SHOWSTATS) {
+        data.elapsedTime = `${timer.getTotalTime()}s`
+    }
+
+    return data
   }
 
   return {
