@@ -5,14 +5,22 @@
   "main": "service-finder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node service-finder.js"
+    "start": "npx babel-node src/service-finder.js",
+    "start:server": "npx babel-node src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "node-fetch": "^2.6.0",
-    "portscanner": "^2.2.0"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "nodemon": "^2.0.2"
   }
 }
